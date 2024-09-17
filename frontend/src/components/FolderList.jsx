@@ -1,18 +1,25 @@
-import  { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Folder } from 'lucide-react';
 import PropTypes from 'prop-types';
 import ConfirmDialog from './ConfirmDialog';
 
 export default function FolderList({ folders, onDeleteFolder }) {
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, folderId: null, folderName: '' });
+  const navigate = useNavigate();
 
-  const handleDeleteClick = (folderId, folderName) => {
+  const handleDeleteClick = (e, folderId, folderName) => {
+    e.stopPropagation();
     setConfirmDialog({ isOpen: true, folderId, folderName });
   };
 
   const handleConfirmDelete = () => {
     onDeleteFolder(confirmDialog.folderId);
     setConfirmDialog({ isOpen: false, folderId: null, folderName: '' });
+  };
+
+  const handleFolderClick = (folderId) => {
+    navigate(`/folder/${folderId}`);
   };
 
   return (
@@ -25,15 +32,16 @@ export default function FolderList({ folders, onDeleteFolder }) {
           {folders.map((folder) => (
             <div 
               key={folder._id} 
-              className="flex items-center justify-between p-3 rounded-md" 
+              className="flex items-center justify-between p-3 rounded-md cursor-pointer hover:bg-gray-700"
               style={{ backgroundColor: folder.color + '33' }}
+              onClick={() => handleFolderClick(folder._id)}
             >
               <div className="flex items-center">
                 <Folder className="mr-3 h-5 w-5" style={{ color: folder.color }} />
                 <span className="text-white">{folder.name}</span>
               </div>
               <button
-                onClick={() => handleDeleteClick(folder._id, folder.name)}
+                onClick={(e) => handleDeleteClick(e, folder._id, folder.name)}
                 className="focus:outline-none transition-transform duration-200 ease-in-out transform hover:scale-110"
               >
                 <img 
