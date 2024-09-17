@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
 import folderRoutes from './routes/folders.js';
+import taskRoutes from './routes/tasks.js';
 
 // Cargar variables de entorno
 dotenv.config();
@@ -25,6 +26,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 // Rutas
 app.use('/api/auth', authRoutes);
 app.use('/api/folders', folderRoutes);
+app.use('/api/tasks', taskRoutes);
 
 // Iniciar el servidor
 const PORT = process.env.PORT || 5000;

@@ -44,5 +44,17 @@ router.delete('/:id', authenticateToken, async (req, res) => {
       res.status(500).json({ message: 'Error al eliminar la carpeta' });
     }
   });
+  router.get('/:id', authenticateToken, async (req, res) => {
+    try {
+      const folder = await Folder.findOne({ _id: req.params.id, user: req.user.userId });
+      if (!folder) {
+        return res.status(404).json({ message: 'Carpeta no encontrada' });
+      }
+      res.json(folder);
+    } catch (error) {
+      console.error('Error al obtener la carpeta:', error);
+      res.status(500).json({ message: 'Error al obtener la carpeta' });
+    }
+  });
 
 export default router;
