@@ -13,21 +13,24 @@ export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
   };
 
   const handleSaveEdit = () => {
-    onUpdateTask(task._id, { 
-      title: editedTitle, 
+    const updatedTask = {
+      title: editedTitle,
       description: editedDescription,
-      dueDate: editedDueDate ? new Date(editedDueDate) : null
-    });
+      dueDate: editedDueDate ? new Date(editedDueDate).toISOString() : null
+    };
+    onUpdateTask(task._id, updatedTask);
     setIsEditing(false);
   };
 
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('es-ES', {
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Fecha inválida';
+    return date.toLocaleDateString('es-ES', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      timeZone: 'UTC'
     });
   };
 
