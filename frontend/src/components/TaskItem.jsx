@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { Trash2, Edit2, Check, X } from 'lucide-react';
 import { useState } from 'react';
+import { Trash2, Edit2, Check, X } from 'lucide-react';
 
 export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -77,7 +77,7 @@ export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
               </button>
             </div>
           </div>
-          <p className="text-gray-300 mb-2">{task.description}</p>
+          <p className="text-gray-300 mb-2 whitespace-pre-wrap">{task.description}</p>
           <div className="text-sm text-gray-400">
             <p>Creado: {formatDate(task.createdAt)}</p>
             {task.dueDate && <p>Vence: {formatDate(task.dueDate)}</p>}
