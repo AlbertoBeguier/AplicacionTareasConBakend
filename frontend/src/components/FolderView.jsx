@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import CreateTaskForm from './CreateTaskForm';
 import TaskItem from './TaskItem';
@@ -9,7 +9,6 @@ export default function FolderView() {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState('');
   const { folderId } = useParams();
-  const navigate = useNavigate();
 
   const fetchFolderAndTasks = useCallback(async () => {
     try {
@@ -75,12 +74,6 @@ export default function FolderView() {
 
   return (
     <div className="p-6 bg-gray-800 rounded-lg shadow-xl">
-      <button 
-        onClick={() => navigate(-1)} 
-        className="mb-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
-      >
-        Volver
-      </button>
       <h2 className="text-3xl font-bold text-white mb-6">{folder.name}</h2>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <div className="mb-8">
