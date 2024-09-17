@@ -20,7 +20,7 @@ export default function CreateFolderForm({ onCreateFolder }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label htmlFor="folderName" className="block text-sm font-medium text-gray-300">
+        <label htmlFor="folderName" className="block text-sm font-medium text-gray-300 carpetas">
           Nombre de la Carpeta
         </label>
         <input

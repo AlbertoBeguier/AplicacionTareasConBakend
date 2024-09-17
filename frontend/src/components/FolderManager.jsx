@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import CreateFolderForm from './CreateFolderForm';
 import FolderList from './FolderList';
@@ -8,6 +9,7 @@ export default function FolderManager() {
   const [folders, setFolders] = useState([]);
   const [isFormExpanded, setIsFormExpanded] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchFolders();
@@ -56,11 +58,15 @@ export default function FolderManager() {
     }
   };
 
+  const handleFolderSelect = (folderId) => {
+    navigate(`/folder/${folderId}`);
+  };
+
   return (
-    <div className="w-full">
+    <div className="w-full max-w-4xl mx-auto">
       {error && <p className="text-red-500 mb-4">{error}</p>}
-      <div className="flex space-x-8">
-        <div className="w-1/2 bg-gray-800 p-8 rounded-lg shadow-lg">
+      <div className="mb-8">
+        <div className="bg-gray-800 p-8 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold text-white mb-4">Crear Nueva Carpeta</h2>
           <button
             onClick={() => setIsFormExpanded(!isFormExpanded)}
@@ -72,10 +78,14 @@ export default function FolderManager() {
 
           {isFormExpanded && <CreateFolderForm onCreateFolder={handleCreateFolder} />}
         </div>
+      </div>
 
-        <div className="w-1/2 bg-gray-800 p-8 rounded-lg shadow-lg">
-          <FolderList folders={folders} onDeleteFolder={handleDeleteFolder} />
-        </div>
+      <div className="bg-gray-800 p-8 rounded-lg shadow-lg">
+        <FolderList
+          folders={folders}
+          onDeleteFolder={handleDeleteFolder}
+          onSelectFolder={handleFolderSelect}
+        />
       </div>
     </div>
   );

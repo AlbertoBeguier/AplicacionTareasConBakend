@@ -1,0 +1,20 @@
+.carpetas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0px;
+}   
+
+@keyframes pulse-red {
+    0%, 100% {
+      background-color: transparent;
+    }
+    50% {
+      background-color: rgba(255, 0, 0, 0.5);
+    }
+  }
+  
+  .animate-pulse-red {
+    animation: pulse-red 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
