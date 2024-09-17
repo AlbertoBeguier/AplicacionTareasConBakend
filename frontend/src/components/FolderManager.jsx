@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import CreateFolderForm from './CreateFolderForm';
 import FolderList from './FolderList';
+import './FolderManager.css';
 
 export default function FolderManager() {
   const [folders, setFolders] = useState([]);
@@ -67,7 +68,7 @@ export default function FolderManager() {
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <div className="mb-8">
         <div className="bg-gray-800 p-8 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-white mb-4">Crear Nueva Carpeta</h2>
+          <h2 className="text-2xl font-bold text-white mb-4 titulo-nueva-carpeta">Crear Nueva Carpeta</h2>
           <button
             onClick={() => setIsFormExpanded(!isFormExpanded)}
             className="w-full mb-4 bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded flex items-center justify-center"
