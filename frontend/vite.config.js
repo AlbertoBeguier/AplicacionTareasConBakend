@@ -14,4 +14,8 @@ export default defineConfig({
       ],
     },
   },
+  server: {
+    port: parseInt(import.meta.env.VITE_PORT) || 5000, // Usar el puerto de Vite o 5000 como fallback
+    host: true  // Esto permite que la aplicación sea accesible externamente
+  }
 })
