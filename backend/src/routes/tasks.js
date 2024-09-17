@@ -19,10 +19,17 @@ router.get('/folder/:folderId', authenticateToken, async (req, res) => {
 router.post('/', authenticateToken, async (req, res) => {
   try {
     const { title, description, dueDate, folderId } = req.body;
+    let dueDateObj = null;
+    if (dueDate) {
+      dueDateObj = new Date(dueDate);
+      if (isNaN(dueDateObj.getTime())) {
+        return res.status(400).json({ message: 'Fecha de vencimiento inválida' });
+      }
+    }
     const newTask = new Task({
       title,
       description,
-      dueDate,
+      dueDate: dueDateObj,
       folder: folderId,
       user: req.user.userId
     });
@@ -38,9 +45,16 @@ router.post('/', authenticateToken, async (req, res) => {
 router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const { title, description, dueDate, completed } = req.body;
+    let dueDateObj = null;
+    if (dueDate) {
+      dueDateObj = new Date(dueDate);
+      if (isNaN(dueDateObj.getTime())) {
+        return res.status(400).json({ message: 'Fecha de vencimiento inválida' });
+      }
+    }
     const task = await Task.findOneAndUpdate(
       { _id: req.params.id, user: req.user.userId },
-      { title, description, dueDate, completed },
+      { title, description, dueDate: dueDateObj, completed },
       { new: true }
     );
     if (!task) {
