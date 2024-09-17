@@ -1,9 +1,8 @@
-import { LogOut, UserPlus, ArrowLeft } from 'lucide-react';
+import { LogOut, ArrowLeft } from 'lucide-react';
 import PropTypes from 'prop-types';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const Navbar = ({ user, onLogout, onCreateUser }) => {
-  const isAdmin = user && user.username === 'Alberto' && user.password === '12358131849';
+const Navbar = ({ user, onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -30,15 +29,6 @@ const Navbar = ({ user, onLogout, onCreateUser }) => {
           {user && (
             <div className="flex items-center space-x-4">
               <span className="text-white mr-4">Bienvenido, {user.username}</span>
-              {isAdmin && (
-                <button
-                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center"
-                  onClick={onCreateUser}
-                >
-                  <UserPlus className="mr-2 h-5 w-5" />
-                  Crear Usuario
-                </button>
-              )}
               <button
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex items-center"
                 onClick={onLogout}
@@ -50,7 +40,7 @@ const Navbar = ({ user, onLogout, onCreateUser }) => {
           )}
         </div>
       </nav>
-      <div className="h-16"></div> {/* Espaciador */}
+      <div className="h-16"></div>
     </>
   );
 };
@@ -58,10 +48,8 @@ const Navbar = ({ user, onLogout, onCreateUser }) => {
 Navbar.propTypes = {
   user: PropTypes.shape({
     username: PropTypes.string.isRequired,
-    password: PropTypes.string.isRequired,
   }),
   onLogout: PropTypes.func.isRequired,
-  onCreateUser: PropTypes.func.isRequired,
 };
 
 export default Navbar;

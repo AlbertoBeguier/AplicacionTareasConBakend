@@ -5,6 +5,7 @@ import LoginForm from './components/LoginForm';
 import FolderManager from './components/FolderManager';
 import CreateUserForm from './components/CreateUserForm';
 import FolderView from './components/FolderView';
+import axios from 'axios';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -38,17 +39,30 @@ function App() {
     setShowCreateUserForm(false);
   };
 
+  const handleCreateUserSubmit = async (username, password) => {
+    try {
+      const response = await axios.post('http://localhost:3000/api/users', { username, password });
+      console.log('Usuario creado:', response.data);
+      setShowCreateUserForm(false);
+      // Opcionalmente, puedes iniciar sesión automáticamente con el nuevo usuario
+      // handleLogin(response.data);
+    } catch (error) {
+      console.error('Error al crear usuario:', error);
+      throw error; // Re-lanza el error para que pueda ser manejado en el componente CreateUserForm
+    }
+  };
+
   const isAdmin = user && user.username === 'Alberto';
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-gray-100 flex flex-col">
         <Navbar 
           user={user} 
           onLogout={handleLogout} 
           onCreateUser={isAdmin ? handleCreateUser : undefined} 
         />
-        <div className="container mx-auto px-4 py-8">
+        <main className="flex-grow container mx-auto px-4 py-8 mt-16">
           <Routes>
             <Route path="/login" element={!user ? <LoginForm onLogin={handleLogin} /> : <Navigate to="/" />} />
             <Route 
@@ -60,9 +74,9 @@ function App() {
               element={user ? <FolderView /> : <Navigate to="/login" />} 
             />
           </Routes>
-        </div>
+        </main>
         {showCreateUserForm && isAdmin && (
-          <CreateUserForm onClose={handleCloseCreateUserForm} />
+          <CreateUserForm onClose={handleCloseCreateUserForm} onCreateUser={handleCreateUserSubmit} />
         )}
       </div>
     </Router>
