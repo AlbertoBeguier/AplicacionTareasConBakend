@@ -6,7 +6,7 @@ import authRoutes from './routes/auth.js';
 import folderRoutes from './routes/folders.js';
 import taskRoutes from './routes/tasks.js';
 
-// Cargar variables de entorno
+// Cargar variables de entorno desde el archivo .env
 dotenv.config();
 
 // Crear la aplicación Express
