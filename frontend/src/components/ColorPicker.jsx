@@ -6,7 +6,7 @@ const colorOptions = [
   '#FFD54F', '#4DB6AC', '#7986CB', '#9575CD', '#4DD0E1', '#81C784', '#DCE775',
   '#FFB74D', '#A1887F', '#90A4AE', '#B39DDB', '#FFAB91', '#F48FB1'
 ];
-
+ // Componente para seleccionar el color de la carpeta
 export default function ColorPicker({ selectedColor, onColorChange }) {
   const [isOpen, setIsOpen] = useState(false);
 
