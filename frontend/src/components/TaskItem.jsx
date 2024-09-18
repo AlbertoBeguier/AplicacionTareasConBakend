@@ -68,7 +68,7 @@ export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
       ) : (
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between mb-2">
-            <h3 className={`text-lg font-semibold ${task.completed ? 'line-through text-gray-400' : 'text-white'}`}>
+            <h3 className={`text-lg font-semibold ${task.completed ? 'line-through text-gray-400' : 'text-blue-500'}`}>
               {task.title}
             </h3>
             <div className="flex space-x-2">

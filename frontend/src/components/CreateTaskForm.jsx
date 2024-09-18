@@ -12,7 +12,7 @@ export default function CreateTaskForm({ onCreateTask }) {
     e.preventDefault();
     if (title.trim() && description.trim()) {
       onCreateTask({ 
-        title: title.trim(), 
+        title: title.trim().toUpperCase(),
         description: description.trim(),
         dueDate: dueDate ? new Date(dueDate) : null
       });
@@ -21,6 +21,10 @@ export default function CreateTaskForm({ onCreateTask }) {
       setDueDate('');
       setIsFormVisible(false);
     }
+  };
+
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value.toUpperCase());
   };
 
   const handleToggleForm = () => {
@@ -55,8 +59,8 @@ export default function CreateTaskForm({ onCreateTask }) {
                 type="text"
                 id="title"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={handleTitleChange}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase"
                 required
               />
             </div>
