@@ -4,8 +4,6 @@ import axios from 'axios';
 import TaskItem from './TaskItem';
 import CreateTaskForm from './CreateTaskForm';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
 export default function TaskList({ folderId }) {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState('');
@@ -14,7 +12,7 @@ export default function TaskList({ folderId }) {
     if (!folderId) return;
     
     try {
-      const response = await axios.get(`${API_URL}/api/tasks/folder/${folderId}`, {
+      const response = await axios.get(`http://localhost:5000/api/tasks/folder/${folderId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -33,7 +31,7 @@ export default function TaskList({ folderId }) {
 
   const handleCreateTask = async (newTask) => {
     try {
-      const response = await axios.post(`${API_URL}/api/tasks`, 
+      const response = await axios.post('http://localhost:5000/api/tasks', 
         { ...newTask, folderId },
         {
           headers: {
@@ -51,7 +49,7 @@ export default function TaskList({ folderId }) {
 
   const handleUpdateTask = async (taskId, updates) => {
     try {
-      const response = await axios.put(`${API_URL}/api/tasks/${taskId}`, 
+      const response = await axios.put(`http://localhost:5000/api/tasks/${taskId}`, 
         updates,
         {
           headers: {
@@ -69,7 +67,7 @@ export default function TaskList({ folderId }) {
 
   const handleDeleteTask = async (taskId) => {
     try {
-      await axios.delete(`${API_URL}/api/tasks/${taskId}`, {
+      await axios.delete(`http://localhost:5000/api/tasks/${taskId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -83,21 +81,22 @@ export default function TaskList({ folderId }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       <h3 className="text-xl font-bold text-white mb-4">Tareas</h3>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <CreateTaskForm onCreateTask={handleCreateTask} />
       {tasks.length === 0 ? (
-        <p className="text-gray-400">No hay tareas en esta carpeta.</p>
+        <p className="text-gray-400 mt-4">No hay tareas en esta carpeta.</p>
       ) : (
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mt-4">
           {tasks.map((task) => (
-            <TaskItem 
-              key={task._id} 
-              task={task} 
-              onUpdateTask={handleUpdateTask}
-              onDeleteTask={handleDeleteTask}
-            />
+            <div key={task._id} className="w-full">
+              <TaskItem 
+                task={task} 
+                onUpdateTask={handleUpdateTask}
+                onDeleteTask={handleDeleteTask}
+              />
+            </div>
           ))}
         </div>
       )}

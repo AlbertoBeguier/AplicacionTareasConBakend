@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import CreateTaskForm from './CreateTaskForm';
 import TaskItem from './TaskItem';
+import './FolderView.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -79,22 +80,23 @@ export default function FolderView() {
       <h2 className="text-3xl font-bold text-white mb-6">{folder.name}</h2>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <div className="mb-8">
-        <h3 className="text-xl font-bold text-white mb-4">Crear Nueva Tarea</h3>
+ 
         <CreateTaskForm onCreateTask={handleCreateTask} />
       </div>
       <div className="mt-8">
-        <h3 className="text-xl font-bold text-white mb-4">Tareas</h3>
+        <h3 className="text-xl font-bold text-white mb-4 titulo-tareas">Tareas</h3>
         {tasks.length === 0 ? (
           <p className="text-gray-400">No hay tareas en esta carpeta.</p>
         ) : (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {tasks.map((task) => (
-              <TaskItem 
-                key={task._id} 
-                task={task} 
-                onUpdateTask={handleUpdateTask}
-                onDeleteTask={handleDeleteTask}
-              />
+              <div key={task._id} className="w-full">
+                <TaskItem 
+                  task={task} 
+                  onUpdateTask={handleUpdateTask}
+                  onDeleteTask={handleDeleteTask}
+                />
+              </div>
             ))}
           </div>
         )}

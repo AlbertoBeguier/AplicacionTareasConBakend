@@ -35,9 +35,9 @@ export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
   };
 
   return (
-    <div className="bg-gray-700 p-4 rounded-md shadow-md">
+    <div className="bg-gray-700 p-4 rounded-md shadow-md h-full flex flex-col">
       {isEditing ? (
-        <div className="space-y-2">
+        <div className="space-y-2 flex-grow">
           <input
             type="text"
             value={editedTitle}
@@ -47,7 +47,7 @@ export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
           <textarea
             value={editedDescription}
             onChange={(e) => setEditedDescription(e.target.value)}
-            className="w-full bg-gray-600 text-white p-2 rounded"
+            className="w-full bg-gray-600 text-white p-2 rounded flex-grow"
             rows="3"
           ></textarea>
           <input
@@ -66,7 +66,7 @@ export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
           </div>
         </div>
       ) : (
-        <>
+        <div className="flex flex-col h-full">
           <div className="flex items-center justify-between mb-2">
             <h3 className={`text-lg font-semibold ${task.completed ? 'line-through text-gray-400' : 'text-white'}`}>
               {task.title}
@@ -80,7 +80,7 @@ export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
               </button>
             </div>
           </div>
-          <p className="text-gray-300 mb-2 whitespace-pre-wrap">{task.description}</p>
+          <p className="text-gray-300 mb-2 whitespace-pre-wrap flex-grow">{task.description}</p>
           <div className="text-sm text-gray-400">
             <p>Creado: {formatDate(task.createdAt)}</p>
             {task.dueDate && <p>Vence: {formatDate(task.dueDate)}</p>}
@@ -96,7 +96,7 @@ export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
               <span className="text-white">Completada</span>
             </label>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

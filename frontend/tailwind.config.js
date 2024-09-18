@@ -5,7 +5,21 @@ export default {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        // Puedes agregar colores personalizados aquí si los necesitas
+      },
+      fontFamily: {
+        // Puedes agregar fuentes personalizadas aquí si las necesitas
+      },
+    },
   },
   plugins: [],
+  // Añadimos esto para asegurarnos de que las clases responsive funcionen correctamente
+  variants: {
+    extend: {
+      display: ['responsive'],
+      gridTemplateColumns: ['responsive'],
+    },
+  },
 }
