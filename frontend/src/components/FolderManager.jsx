@@ -6,6 +6,9 @@ import CreateFolderForm from './CreateFolderForm';
 import FolderList from './FolderList';
 import './FolderManager.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+
 export default function FolderManager() {
   const [folders, setFolders] = useState([]);
   const [isFormExpanded, setIsFormExpanded] = useState(false);
@@ -18,7 +21,7 @@ export default function FolderManager() {
 
   const fetchFolders = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/folders', {
+      const response = await axios.get(`${API_URL}/api/folders`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -32,7 +35,7 @@ export default function FolderManager() {
 
   const handleCreateFolder = async (newFolder) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/folders', newFolder, {
+      const response = await axios.post(`${API_URL}/api/folders`, newFolder, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -47,7 +50,7 @@ export default function FolderManager() {
 
   const handleDeleteFolder = async (folderId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/folders/${folderId}`, {
+      await axios.delete(`${API_URL}/api/folders/${folderId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
