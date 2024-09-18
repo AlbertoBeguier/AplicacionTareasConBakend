@@ -4,6 +4,8 @@ import axios from 'axios';
 import CreateTaskForm from './CreateTaskForm';
 import TaskItem from './TaskItem';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export default function FolderView() {
   const [folder, setFolder] = useState(null);
   const [tasks, setTasks] = useState([]);
@@ -13,10 +15,10 @@ export default function FolderView() {
   const fetchFolderAndTasks = useCallback(async () => {
     try {
       const [folderResponse, tasksResponse] = await Promise.all([
-        axios.get(`http://localhost:5000/api/folders/${folderId}`, {
+        axios.get(`${API_URL}/api/folders/${folderId}`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         }),
-        axios.get(`http://localhost:5000/api/tasks/folder/${folderId}`, {
+        axios.get(`${API_URL}/api/tasks/folder/${folderId}`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         })
       ]);
@@ -34,7 +36,7 @@ export default function FolderView() {
 
   const handleCreateTask = async (newTask) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/tasks', 
+      const response = await axios.post(`${API_URL}/api/tasks`, 
         { ...newTask, folderId },
         { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
       );
@@ -47,7 +49,7 @@ export default function FolderView() {
 
   const handleUpdateTask = async (taskId, updates) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/tasks/${taskId}`, 
+      const response = await axios.put(`${API_URL}/api/tasks/${taskId}`, 
         updates,
         { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
       );
@@ -60,7 +62,7 @@ export default function FolderView() {
 
   const handleDeleteTask = async (taskId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${taskId}`, {
+      await axios.delete(`${API_URL}/api/tasks/${taskId}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       setTasks(prevTasks => prevTasks.filter(task => task._id !== taskId));

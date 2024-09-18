@@ -4,6 +4,8 @@ import axios from 'axios';
 import TaskItem from './TaskItem';
 import CreateTaskForm from './CreateTaskForm';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export default function TaskList({ folderId }) {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState('');
@@ -12,7 +14,7 @@ export default function TaskList({ folderId }) {
     if (!folderId) return;
     
     try {
-      const response = await axios.get(`http://localhost:5000/api/tasks/folder/${folderId}`, {
+      const response = await axios.get(`${API_URL}/api/tasks/folder/${folderId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -31,7 +33,7 @@ export default function TaskList({ folderId }) {
 
   const handleCreateTask = async (newTask) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/tasks', 
+      const response = await axios.post(`${API_URL}/api/tasks`, 
         { ...newTask, folderId },
         {
           headers: {
@@ -49,7 +51,7 @@ export default function TaskList({ folderId }) {
 
   const handleUpdateTask = async (taskId, updates) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/tasks/${taskId}`, 
+      const response = await axios.put(`${API_URL}/api/tasks/${taskId}`, 
         updates,
         {
           headers: {
@@ -67,7 +69,7 @@ export default function TaskList({ folderId }) {
 
   const handleDeleteTask = async (taskId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${taskId}`, {
+      await axios.delete(`${API_URL}/api/tasks/${taskId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

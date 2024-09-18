@@ -7,6 +7,8 @@ import CreateUserForm from './components/CreateUserForm';
 import FolderView from './components/FolderView';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function App() {
   const [user, setUser] = useState(null);
   const [showCreateUserForm, setShowCreateUserForm] = useState(false);
@@ -41,7 +43,7 @@ function App() {
 
   const handleCreateUserSubmit = async (username, password) => {
     try {
-      const response = await axios.post('http://localhost:3000/api/users', { username, password });
+      const response = await axios.post(`${API_URL}/api/users`, { username, password });
       console.log('Usuario creado:', response.data);
       setShowCreateUserForm(false);
       // Opcionalmente, puedes iniciar sesión automáticamente con el nuevo usuario
