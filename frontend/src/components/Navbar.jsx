@@ -40,7 +40,7 @@ const Navbar = ({ user, onLogout }) => {
           )}
         </div>
       </nav>
-      <div className="h-16"></div>
+      <div className="h-1"></div>
     </>
   );
 };
