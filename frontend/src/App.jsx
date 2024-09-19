@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import {Footer} from './components/Footer';
 import LoginForm from './components/LoginForm';
 import FolderManager from './components/FolderManager';
 import CreateUserForm from './components/CreateUserForm';
@@ -78,6 +79,7 @@ function App() {
         {showCreateUserForm && isAdmin && (
           <CreateUserForm onClose={handleCloseCreateUserForm} onCreateUser={handleCreateUserSubmit} />
         )}
+        <Footer />
       </div>
     </Router>
   );
