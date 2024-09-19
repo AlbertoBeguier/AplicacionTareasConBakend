@@ -36,8 +36,8 @@ export default function FolderList({ folders, onDeleteFolder }) {
 
   const isNearDueDate = (dueDate) => {
     if (!dueDate) return false;
-    const twoDaysInMs = 2 * 24 * 60 * 60 * 1000;
-    return new Date(dueDate) - currentDate <= twoDaysInMs;
+    const oneDaysInMs = 1 * 24 * 60 * 60 * 1000;
+    return new Date(dueDate) - currentDate <= oneDaysInMs;
   };
 
   const folderHasNearDueTasks = (tasks) => {

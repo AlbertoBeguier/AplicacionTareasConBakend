@@ -81,22 +81,21 @@ export default function TaskList({ folderId }) {
   };
 
   return (
-    <div className="space-y-4 w-full">
+    <div className="space-y-4">
       <h3 className="text-xl font-bold text-white mb-4">Tareas</h3>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <CreateTaskForm onCreateTask={handleCreateTask} />
       {tasks.length === 0 ? (
-        <p className="text-gray-400 mt-4">No hay tareas en esta carpeta.</p>
+        <p className="text-gray-400">No hay tareas en esta carpeta.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mt-4">
+        <div className="space-y-2">
           {tasks.map((task) => (
-            <div key={task._id} className="w-full">
-              <TaskItem 
-                task={task} 
-                onUpdateTask={handleUpdateTask}
-                onDeleteTask={handleDeleteTask}
-              />
-            </div>
+            <TaskItem 
+              key={task._id} 
+              task={task} 
+              onUpdateTask={handleUpdateTask}
+              onDeleteTask={handleDeleteTask}
+            />
           ))}
         </div>
       )}

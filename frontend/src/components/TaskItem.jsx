@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Trash2, Edit2, Check, X } from 'lucide-react';
+import ConfirmDialog from './ConfirmDialog1';
 
 export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(task.title);
   const [editedDescription, setEditedDescription] = useState(task.description);
   const [editedDueDate, setEditedDueDate] = useState(task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '');
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
   const handleToggleComplete = () => {
     onUpdateTask(task._id, { completed: !task.completed });
@@ -20,6 +22,15 @@ export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
     };
     onUpdateTask(task._id, updatedTask);
     setIsEditing(false);
+  };
+
+  const handleDelete = () => {
+    setIsConfirmDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    onDeleteTask(task._id);
+    setIsConfirmDialogOpen(false);
   };
 
   const formatDate = (dateString) => {
@@ -68,14 +79,14 @@ export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
       ) : (
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between mb-2">
-            <h3 className={`text-lg font-semibold ${task.completed ? 'line-through text-gray-400' : 'text-blue-500'}`}>
+            <h3 className={`text-lg font-semibold ${task.completed ? 'line-through text-gray-400' : 'text-blue-400'}`}>
               {task.title}
             </h3>
             <div className="flex space-x-2">
               <button onClick={() => setIsEditing(true)} className="p-1 bg-blue-500 text-white rounded">
                 <Edit2 size={16} />
               </button>
-              <button onClick={() => onDeleteTask(task._id)} className="p-1 bg-red-500 text-white rounded">
+              <button onClick={handleDelete} className="p-1 bg-red-500 text-white rounded">
                 <Trash2 size={16} />
               </button>
             </div>
@@ -98,6 +109,13 @@ export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
           </div>
         </div>
       )}
+      <ConfirmDialog
+        isOpen={isConfirmDialogOpen}
+        onClose={() => setIsConfirmDialogOpen(false)}
+        onConfirm={confirmDelete}
+        title="Confirmar eliminación"
+        message={`¿Estás seguro de  eliminar la tarea \n${task.title}?\nEsta acción es irreversible`}
+      />
     </div>
   );
 }
