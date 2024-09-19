@@ -69,7 +69,7 @@ const Navbar = ({ user, onLogout }) => {
           </div>
         </div>
       </nav>
-      <div className="h-16"></div>
+      <div className="h-8"></div>
     </>
   );
 };
