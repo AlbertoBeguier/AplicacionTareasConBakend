@@ -24,7 +24,7 @@ const Navbar = ({ user, onLogout }) => {
 
   return (
     <>
-      <nav className="bg-gray-800 p-4 fixed top-0 left-0 right-0 z-10">
+      <nav className="bg-gray-950 p-4 fixed top-0 left-0 right-0 z-10">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center">
             <span className="navbar-brand logo-container">
