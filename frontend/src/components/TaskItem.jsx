@@ -11,14 +11,24 @@ export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
   const handleToggleComplete = () => {
-    onUpdateTask(task._id, { completed: !task.completed });
+    if (task.completed) {
+      // If the task is being marked as incomplete, transition to edit mode
+      setIsEditing(true);
+      onUpdateTask(task._id, { completed: false });
+    } else {
+      onUpdateTask(task._id, { completed: true });
+    }
   };
 
   const handleSaveEdit = () => {
+    if (!editedDueDate) {
+      alert("Se requiere una fecha de vencimiento para guardar los cambios.");
+      return;
+    }
     const updatedTask = {
       title: editedTitle,
       description: editedDescription,
-      dueDate: editedDueDate ? new Date(editedDueDate).toISOString() : null
+      dueDate: new Date(editedDueDate).toISOString()
     };
     onUpdateTask(task._id, updatedTask);
     setIsEditing(false);
@@ -66,6 +76,7 @@ export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
             value={editedDueDate}
             onChange={(e) => setEditedDueDate(e.target.value)}
             className="w-full bg-gray-600 text-white p-2 rounded"
+            required
           />
           <div className="flex justify-end space-x-2">
             <button onClick={handleSaveEdit} className="p-1 bg-green-500 text-white rounded">

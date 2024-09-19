@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { PlusCircle, X } from 'lucide-react';
 
@@ -10,11 +10,11 @@ export default function CreateTaskForm({ onCreateTask }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (title.trim() && description.trim()) {
+    if (title.trim() && description.trim() && dueDate) {
       onCreateTask({ 
         title: title.trim().toUpperCase(),
         description: description.trim(),
-        dueDate: dueDate ? new Date(dueDate) : null
+        dueDate: new Date(dueDate)
       });
       setTitle('');
       setDescription('');
@@ -78,7 +78,7 @@ export default function CreateTaskForm({ onCreateTask }) {
             <div className="flex items-end space-x-4">
               <div className="flex-grow">
                 <label htmlFor="dueDate" className="block text-sm font-medium text-gray-300 mb-1">
-                  Fecha de vencimiento (opcional)
+                  Fecha de vencimiento
                 </label>
                 <input
                   type="date"
@@ -86,6 +86,7 @@ export default function CreateTaskForm({ onCreateTask }) {
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
               <button
