@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useNavigate, useLocation } from 'react-router-dom';
 import logo from "../assets/logoEstudio.png";
 import logo1 from "../assets/logoEstudio1.png";
-import './Navbar.css'; // Importamos el archivo de estilos
+import './NavBar.css'; 
 
 const Navbar = ({ user, onLogout }) => {
   const navigate = useNavigate();
