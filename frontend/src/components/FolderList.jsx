@@ -92,7 +92,7 @@ export default function FolderList({ folders, onDeleteFolder }) {
                   <div className="mt-2">
                     <ul className="mt-1 space-y-1">
                       {incompleteTasks.map(task => (
-                        <li key={task._id} className="flex items-center text-xs text-gray-400">
+                        <li key={task._id} className="flex items-center text-xs text-gray-200">
                           <Calendar className="mr-1 h-3 w-3" />
                           <span className={isNearDueDate(task.dueDate) ? 'animate-pulse-red' : ''}>
                             {task.title}: {formatDate(task.dueDate)}
