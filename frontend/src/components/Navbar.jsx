@@ -28,7 +28,7 @@ const Navbar = ({ user, onLogout }) => {
           </div>
           {user && (
             <div className="flex items-center space-x-4">
-              <span className="text-white mr-4">Bienvenido, {user.username}</span>
+              <span className="text-white mr-4">Usuario autorizado: {user.username}</span>
               <button
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex items-center"
                 onClick={onLogout}
