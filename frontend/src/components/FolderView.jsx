@@ -76,7 +76,7 @@ export default function FolderView() {
   if (!folder) return <div className="text-white">Cargando...</div>;
 
   return (
-    <div className="p-6 bg-gray-800 rounded-lg shadow-xl">
+    <div className="p-6 bg-gray-900 rounded-lg shadow-xl">
       <h2 className="text-3xl font-bold text-white mb-6">{folder.name}</h2>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <div className="mb-8">

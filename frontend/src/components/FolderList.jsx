@@ -65,10 +65,10 @@ export default function FolderList({ folders, onDeleteFolder }) {
           return (
             <div 
               key={folder._id} 
-              className={`bg-gray-800 rounded-lg overflow-hidden shadow-md ${folderHasNearDueTasks(incompleteTasks) ? 'animate-pulse-red' : ''}`}
+              className={`bg-gray-900 rounded-lg overflow-hidden shadow-md ${folderHasNearDueTasks(incompleteTasks) ? 'animate-pulse-red' : ''}`}
             >
               <div 
-                className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-700"
+                className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-900"
                 style={{ backgroundColor: folder.color + '33' }}
                 onClick={() => handleFolderClick(folder._id)}
               >
@@ -87,7 +87,7 @@ export default function FolderList({ folders, onDeleteFolder }) {
                   />
                 </button>
               </div>
-              <div className="px-4 py-2 bg-gray-700">
+              <div className="px-4 py-2 bg-gray-900">
                 {incompleteTasks.length > 0 && (
                   <div className="mt-2">
                     <ul className="mt-1 space-y-1">

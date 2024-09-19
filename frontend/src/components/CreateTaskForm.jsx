@@ -51,7 +51,7 @@ export default function CreateTaskForm({ onCreateTask }) {
       </button>
 
       {isFormVisible && (
-        <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+        <div className="bg-gray-900 p-6 rounded-lg shadow-lg">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-1">Título</label>

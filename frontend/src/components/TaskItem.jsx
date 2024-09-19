@@ -56,7 +56,7 @@ export default function TaskItem({ task, onUpdateTask, onDeleteTask }) {
   };
 
   return (
-    <div className="bg-gray-700 p-4 rounded-md shadow-md h-full flex flex-col">
+    <div className="bg-gray-800 p-4 rounded-md shadow-md h-full flex flex-col">
       {isEditing ? (
         <div className="space-y-2 flex-grow">
           <input
