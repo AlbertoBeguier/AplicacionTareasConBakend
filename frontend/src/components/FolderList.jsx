@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Folder, Calendar } from 'lucide-react';
 import PropTypes from 'prop-types';
 import ConfirmDialog from './ConfirmDialog';
+import { Trash2 } from 'lucide-react';
 import './FolderList.css';
 
 export default function FolderList({ folders, onDeleteFolder }) {
@@ -78,13 +79,9 @@ export default function FolderList({ folders, onDeleteFolder }) {
                 </div>
                 <button
                   onClick={(e) => handleDeleteClick(e, folder._id, folder.name)}
-                  className="focus:outline-none transition-transform duration-200 ease-in-out transform hover:scale-110"
+                  className="p-1 bg-gray-900 text-white rounded"
                 >
-                  <img 
-                    src="/images/trash.png" 
-                    alt="Eliminar carpeta" 
-                    className="w-6 h-6"
-                  />
+                  <Trash2 size={16} />
                 </button>
               </div>
               <div className="px-4 py-2 bg-gray-900">
