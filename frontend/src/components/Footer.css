@@ -10,12 +10,13 @@
   margin: 0px;
   text-align: center;
   font-weight: 500;
+  font-size: 90%;
 }
 
 .parrafo-footer sup {
   vertical-align: baseline;
   position: relative;
-  top: -0.4em; /* Ajusta este valor según necesites */
+  top: -0.6em; /* Ajusta este valor según necesites */
   font-size: 75%; /* Ajusta este valor según necesites */
   margin-left: -0.01em; /* Ajusta para reducir el espacio antes del sup */
   margin-right: -0.01em; /* Ajusta para reducir el espacio después del sup */

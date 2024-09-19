@@ -4,8 +4,7 @@ export function Footer() {
   return (
     <>
       <div className="footer-container">
-        <br />
-     
+    
         <div className="parrafo-footer">
           © Todos los derechos reservados - A<sup>2</sup>B Systems
         </div>
@@ -15,7 +14,7 @@ export function Footer() {
           alt="estudio"
         />
         <div className="parrafo-footer">Estudio Beguier</div>
-        <hr className="lineaHorizontal-footer" />
+     <br />
       </div>
     </>
   );
