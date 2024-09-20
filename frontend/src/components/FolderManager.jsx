@@ -8,7 +8,6 @@ import './FolderManager.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-
 export default function FolderManager() {
   const [folders, setFolders] = useState([]);
   const [isFormExpanded, setIsFormExpanded] = useState(false);
@@ -29,7 +28,7 @@ export default function FolderManager() {
       setFolders(response.data);
     } catch (error) {
       console.error('Error al obtener las carpetas:', error);
-      setError('Error al cargar las carpetas');
+      setError('Error al cargar las carpetas. Por favor, intente de nuevo más tarde.');
     }
   };
 
@@ -44,7 +43,7 @@ export default function FolderManager() {
       setIsFormExpanded(false);
     } catch (error) {
       console.error('Error al crear la carpeta:', error);
-      setError('Error al crear la carpeta');
+      setError('Error al crear la carpeta. Por favor, intente de nuevo.');
     }
   };
 
@@ -58,7 +57,7 @@ export default function FolderManager() {
       setFolders(folders.filter(folder => folder._id !== folderId));
     } catch (error) {
       console.error('Error al eliminar la carpeta:', error);
-      setError('Error al eliminar la carpeta');
+      setError('Error al eliminar la carpeta. Por favor, intente de nuevo.');
     }
   };
 
@@ -68,7 +67,12 @@ export default function FolderManager() {
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+          <strong className="font-bold">Error: </strong>
+          <span className="block sm:inline">{error}</span>
+        </div>
+      )}
       <div className="mb-8">
         <div className="bg-gray-900 p-8 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold text-white mb-4 titulo-nueva-carpeta">Crear Nueva Carpeta</h2>

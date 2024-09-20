@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Folder, Calendar } from 'lucide-react';
+import { Folder, Calendar, Trash2 } from 'lucide-react';
 import PropTypes from 'prop-types';
 import ConfirmDialog from './ConfirmDialog';
-import { Trash2 } from 'lucide-react';
 import './FolderList.css';
 
 export default function FolderList({ folders, onDeleteFolder }) {
@@ -35,22 +34,22 @@ export default function FolderList({ folders, onDeleteFolder }) {
     return new Date(dateString).toLocaleDateString('es-ES', options);
   };
 
+  const isOverdue = (dueDate) => {
+    if (!dueDate) return false;
+    return new Date(dueDate) < currentDate;
+  };
+
   const isNearDueDate = (dueDate) => {
     if (!dueDate) return false;
     const dueDateTime = new Date(dueDate).getTime();
     const currentDateTime = currentDate.getTime();
     const oneDayInMs = 24 * 60 * 60 * 1000;
 
-    // Verifica si la fecha de vencimiento es hoy, mañana o pasado mañana
-    return dueDateTime <= currentDateTime + (1 * oneDayInMs) && dueDateTime >= currentDateTime - oneDayInMs;
+    return dueDateTime <= currentDateTime + oneDayInMs && dueDateTime >= currentDateTime;
   };
 
-  const folderHasNearDueTasks = (tasks) => {
-    return tasks && tasks.some(task => !task.completed && isNearDueDate(task.dueDate));
-  };
-
-  const getIncompleteTasks = (tasks) => {
-    return tasks ? tasks.filter(task => !task.completed) : [];
+  const folderHasNearDueOrOverdueTasks = (tasks) => {
+    return tasks && tasks.some(task => !task.completed && (isOverdue(task.dueDate) || isNearDueDate(task.dueDate)));
   };
 
   if (!folders || folders.length === 0) {
@@ -61,48 +60,53 @@ export default function FolderList({ folders, onDeleteFolder }) {
     <div>
       <h2 className="text-2xl font-bold text-white mb-4 carpetas">Carpetas</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {folders.map((folder) => {
-          const incompleteTasks = getIncompleteTasks(folder.upcomingTasks);
-          return (
+        {folders.map((folder) => (
+          <div 
+            key={folder._id} 
+            className={`bg-gray-900 rounded-lg overflow-hidden shadow-md ${folderHasNearDueOrOverdueTasks(folder.upcomingTasks) ? 'animate-pulse-red' : ''}`}
+          >
             <div 
-              key={folder._id} 
-              className={`bg-gray-900 rounded-lg overflow-hidden shadow-md ${folderHasNearDueTasks(incompleteTasks) ? 'animate-pulse-red' : ''}`}
+              className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-900"
+              style={{ backgroundColor: folder.color + '33' }}
+              onClick={() => handleFolderClick(folder._id)}
             >
-              <div 
-                className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-900"
-                style={{ backgroundColor: folder.color + '33' }}
-                onClick={() => handleFolderClick(folder._id)}
+              <div className="flex items-center">
+                <Folder className="mr-3 h-5 w-5" style={{ color: folder.color }} />
+                <span className="text-white font-medium">{folder.name}</span>
+              </div>
+              <button
+                onClick={(e) => handleDeleteClick(e, folder._id, folder.name)}
+                className="p-1 bg-gray-900 text-white rounded"
               >
-                <div className="flex items-center">
-                  <Folder className="mr-3 h-5 w-5" style={{ color: folder.color }} />
-                  <span className="text-white font-medium">{folder.name}</span>
-                </div>
-                <button
-                  onClick={(e) => handleDeleteClick(e, folder._id, folder.name)}
-                  className="p-1 bg-gray-900 text-white rounded"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-              <div className="px-4 py-2 bg-gray-900">
-                {incompleteTasks.length > 0 && (
-                  <div className="mt-2">
-                    <ul className="mt-1 space-y-1">
-                      {incompleteTasks.map(task => (
-                        <li key={task._id} className="flex items-center text-xs text-gray-200">
-                          <Calendar className="mr-1 h-3 w-3" />
-                          <span className={isNearDueDate(task.dueDate) ? 'animate-pulse-red' : ''}>
-                            {task.title}: {formatDate(task.dueDate)}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
+                <Trash2 size={16} />
+              </button>
             </div>
-          );
-        })}
+            <div className="px-4 py-2 bg-gray-900">
+              {folder.upcomingTasks && folder.upcomingTasks.length > 0 ? (
+                <div className="mt-2">
+                  <ul className="mt-1 space-y-1">
+                    {folder.upcomingTasks.map(task => (
+                      <li key={task._id} className="flex items-center text-xs text-gray-200">
+                        <Calendar className="mr-1 h-3 w-3" />
+                        <span className={`
+                          ${task.completed ? 'line-through text-gray-500' : ''}
+                          ${isOverdue(task.dueDate) && !task.completed ? 'text-red-500' : ''}
+                          ${isNearDueDate(task.dueDate) && !task.completed ? 'text-yellow-500' : ''}
+                          ${(isOverdue(task.dueDate) || isNearDueDate(task.dueDate)) && !task.completed ? 'animate-pulse' : ''}
+                        `}>
+                          {task.title}: {formatDate(task.dueDate)}
+                          {task.completed ? ' (Completada)' : isOverdue(task.dueDate) ? ' (Vencida)' : ''}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p className="text-xs text-gray-400"> Ingrese para ver tareas o agregarlas</p>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
       <ConfirmDialog
         isOpen={confirmDialog.isOpen}
