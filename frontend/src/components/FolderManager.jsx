@@ -128,7 +128,6 @@ export default function FolderManager() {
     const diffTime = due.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    // Agregamos un día a todos los cálculos
     const adjustedDiffDays = diffDays + 2;
    
     if (adjustedDiffDays <= 0) return { type: "overdue", text: "Tarea vencida" };
@@ -144,7 +143,7 @@ export default function FolderManager() {
   }));
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full px-2 sm:px-4"> 
       {error && (
         <div
           className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
@@ -154,8 +153,8 @@ export default function FolderManager() {
           <span className="block sm:inline">{error}</span>
         </div>
       )}
-      <div className="mb-8">
-        <div className="bg-gray-900 p-8 rounded-lg shadow-lg">
+      <div className="mb-4">
+        <div className="bg-gray-900 p-4 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold text-white mb-4 titulo-nueva-carpeta">
             Crear Nueva Carpeta
           </h2>
@@ -177,7 +176,7 @@ export default function FolderManager() {
         </div>
       </div>
 
-      <div className="bg-gray-800 p-8 rounded-lg shadow-lg mb-8">
+      <div className="bg-gray-800 p-4 rounded-lg shadow-lg mb-4">
         <FolderList
           folders={foldersWithTasks}
           onDeleteFolder={handleDeleteFolder}
@@ -186,81 +185,80 @@ export default function FolderManager() {
         />
       </div>
 
-      <div>
-        {folders.map((folder) => (
-          <div key={folder._id} className="mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {foldersWithTasks.map((folder) => (
+          <div key={folder._id} className="mb-4">
             <h3
-              className="text-xl font-semibold mb-4 text-center uppercase"
+              className="text-xl font-semibold mb-2 text-center uppercase"
               style={{ color: folder.color || "#ffffff" }}
             >
               {folder.name}
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-              {tasks[folder._id] &&
-                tasks[folder._id].map((task) => {
-                  const dueDateStatus = getDueDateStatus(task.dueDate);
-                  return (
+            <div className="space-y-2">
+              {folder.upcomingTasks.map((task) => {
+                const dueDateStatus = getDueDateStatus(task.dueDate);
+                return (
+                  <div
+                    key={task._id}
+                    ref={el => taskRefs.current[`${folder._id}-${task._id}`] = el}
+                    className="rounded-md shadow-md overflow-hidden"
+                    style={{ backgroundColor: folder.color || "#374151" }}
+                  >
                     <div
-                      key={task._id}
-                      ref={el => taskRefs.current[`${folder._id}-${task._id}`] = el}
-                      className="rounded-md shadow-md overflow-hidden"
-                      style={{ backgroundColor: folder.color || "#374151" }}
+                      className="bg-black p-2 flex justify-between items-center"
+                      style={{
+                        border: `1px solid ${folder.color || "#ffffff"}`,
+                        borderTopLeftRadius: "0.375rem",
+                        borderTopRightRadius: "0.375rem",
+                        borderBottom: "none",
+                      }}
                     >
-                      <div
-                        className="bg-black p-2 flex justify-between items-center"
-                        style={{
-                          border: `1px solid ${folder.color || "#ffffff"}`,
-                          borderTopLeftRadius: "0.375rem",
-                          borderTopRightRadius: "0.375rem",
-                          borderBottom: "none",
-                        }}
+                      <h4
+                        className={`font-semibold ${
+                          task.completed ? "line-through" : ""
+                        }`}
+                        style={{ color: folder.color || "#ffffff" }}
                       >
-                        <h4
-                          className={`font-semibold ${
-                            task.completed ? "line-through" : ""
-                          }`}
-                          style={{ color: folder.color || "#ffffff" }}
+                        {task.title}
+                      </h4>
+                      {dueDateStatus && (
+                        <button
+                          className={`px-2 py-1 rounded text-xs font-semibold animate-pulse ${
+                            dueDateStatus.type === "overdue"
+                              ? "bg-red-500"
+                              : dueDateStatus.type === "today" || dueDateStatus.type === "oneDay"
+                              ? "bg-yellow-500"
+                              : "bg-green-500"
+                          } text-white`}
                         >
-                          {task.title}
-                        </h4>
-                        {dueDateStatus && (
-                          <button
-                            className={`px-2 py-1 rounded text-xs font-semibold animate-pulse ${
-                              dueDateStatus.type === "overdue"
-                                ? "bg-red-500"
-                                : dueDateStatus.type === "today" || dueDateStatus.type === "oneDay"
-                                ? "bg-yellow-500"
-                                : "bg-green-500"
-                            } text-white`}
-                          >
-                            {dueDateStatus.text}
-                          </button>
+                          {dueDateStatus.text}
+                        </button>
+                      )}
+                    </div>
+                    <div className="p-2">
+                      <p className="text-black font-semibold mb-2 whitespace-pre-wrap text-sm">
+                        {task.description}
+                      </p>
+                      <div className="text-xs text-black">
+                        <p>Creado: {formatDate(task.createdAt)}</p>
+                        {task.dueDate && (
+                          <p>Vence: {formatDate(task.dueDate)}</p>
                         )}
                       </div>
-                      <div className="p-4">
-                        <p className="text-black font-semibold  mb-2 whitespace-pre-wrap">
-                          {task.description}
-                        </p>
-                        <div className="text-sm text-black">
-                          <p>Creado: {formatDate(task.createdAt)}</p>
-                          {task.dueDate && (
-                            <p>Vence: {formatDate(task.dueDate)}</p>
-                          )}
-                        </div>
-                        <div className="mt-2">
-                          <span
-                            className={`inline-block px-3 py-2 rounded ${
-                              task.completed ? "bg-green-500" : "bg-yellow-500"
-                            } text-black text-xs font-semibold shadow-md rounded-md border border-black`}
-                            style={{ borderWidth: "0.5px" }}
-                          >
-                            {task.completed ? "Completada" : "Pendiente"}
-                          </span>
-                        </div>
+                      <div className="mt-2">
+                        <span
+                          className={`inline-block px-2 py-1 rounded ${
+                            task.completed ? "bg-green-500" : "bg-yellow-500"
+                          } text-black text-xs font-semibold shadow-md rounded-md border border-black`}
+                          style={{ borderWidth: "0.5px" }}
+                        >
+                          {task.completed ? "Completada" : "Pendiente"}
+                        </span>
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                );
+              })}
             </div>
           </div>
         ))}

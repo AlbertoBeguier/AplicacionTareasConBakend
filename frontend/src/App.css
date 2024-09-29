@@ -1,1 +1,52 @@
+/* App.css */
 
+/* Ensure the app takes up at least the full viewport height */
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Make the main content area take up all available space */
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  /* Responsive padding for the main content area */
+  @media (min-width: 640px) {
+    main {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    main {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    main {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+  
+  /* Ensure that the Navbar is fixed at the top */
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+  
+  /* Style adjustments for the Footer */
+  .footer {
+    margin-top: auto;
+  }

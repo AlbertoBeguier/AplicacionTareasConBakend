@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import {Footer} from './components/Footer';
+import { Footer } from './components/Footer';
 import LoginForm from './components/LoginForm';
 import FolderManager from './components/FolderManager';
 import CreateUserForm from './components/CreateUserForm';
 import FolderView from './components/FolderView';
 import axios from 'axios';
+import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -63,7 +64,7 @@ function App() {
           onLogout={handleLogout} 
           onCreateUser={isAdmin ? handleCreateUser : undefined} 
         />
-        <main className="flex-grow container mx-auto px-4 py-8 mt-16">
+        <main className="flex-grow w-full px-2 sm:px-4 py-8 mt-16">
           <Routes>
             <Route path="/login" element={!user ? <LoginForm onLogin={handleLogin} /> : <Navigate to="/" />} />
             <Route 
