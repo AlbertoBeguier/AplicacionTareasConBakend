@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -14,6 +14,7 @@ export default function FolderManager() {
   const [isFormExpanded, setIsFormExpanded] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const taskRefs = useRef({});
 
   const fetchTasksForFolder = useCallback(async (folderId) => {
     try {
@@ -99,6 +100,13 @@ export default function FolderManager() {
     navigate(`/folder/${folderId}`);
   };
 
+  const handleTaskSelect = (folderId, taskId) => {
+    const taskElement = taskRefs.current[`${folderId}-${taskId}`];
+    if (taskElement) {
+      taskElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -174,6 +182,7 @@ export default function FolderManager() {
           folders={foldersWithTasks}
           onDeleteFolder={handleDeleteFolder}
           onSelectFolder={handleFolderSelect}
+          onSelectTask={handleTaskSelect}
         />
       </div>
 
@@ -193,6 +202,7 @@ export default function FolderManager() {
                   return (
                     <div
                       key={task._id}
+                      ref={el => taskRefs.current[`${folder._id}-${task._id}`] = el}
                       className="rounded-md shadow-md overflow-hidden"
                       style={{ backgroundColor: folder.color || "#374151" }}
                     >

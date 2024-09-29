@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ConfirmDialog from './ConfirmDialog';
 import './FolderList.css';
 
-export default function FolderList({ folders, onDeleteFolder, onSelectFolder }) {
+export default function FolderList({ folders, onDeleteFolder, onSelectFolder, onSelectTask }) {
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, folderId: null, folderName: '' });
 
   const handleDeleteClick = (e, folderId, folderName) => {
@@ -73,7 +73,15 @@ export default function FolderList({ folders, onDeleteFolder, onSelectFolder }) 
                       const dueDateStatus = getDueDateStatus(task.dueDate);
                       return (
                         <li key={task._id} className="flex items-center justify-between text-xs text-gray-200">
-                          <span>{task.title}</span>
+                          <span 
+                            className="cursor-pointer hover:underline"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSelectTask(folder._id, task._id);
+                            }}
+                          >
+                            {task.title}
+                          </span>
                           {dueDateStatus && (
                             <button
                               className={`px-2 py-1 rounded text-xs font-semibold animate-pulse ${
@@ -127,4 +135,5 @@ FolderList.propTypes = {
   ),
   onDeleteFolder: PropTypes.func.isRequired,
   onSelectFolder: PropTypes.func.isRequired,
+  onSelectTask: PropTypes.func.isRequired,
 };
