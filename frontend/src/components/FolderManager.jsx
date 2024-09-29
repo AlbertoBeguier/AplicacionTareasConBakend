@@ -122,14 +122,18 @@ export default function FolderManager() {
 
     // Agregamos un día a todos los cálculos
     const adjustedDiffDays = diffDays + 2;
-    console.log(adjustedDiffDays);
-
+   
     if (adjustedDiffDays <= 0) return { type: "overdue", text: "Tarea vencida" };
     if (adjustedDiffDays === 1) return { type: "today", text: "Vence hoy" };
     if (adjustedDiffDays === 2) return { type: "oneDay", text: "Vence mañana" };
     if (adjustedDiffDays === 3) return { type: "twoDays", text: "Vence pasado mañana" };
     return null;
   };
+
+  const foldersWithTasks = folders.map(folder => ({
+    ...folder,
+    upcomingTasks: tasks[folder._id] || []
+  }));
 
   return (
     <div className="w-full max-w-4xl mx-auto">
@@ -167,7 +171,7 @@ export default function FolderManager() {
 
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg mb-8">
         <FolderList
-          folders={folders}
+          folders={foldersWithTasks}
           onDeleteFolder={handleDeleteFolder}
           onSelectFolder={handleFolderSelect}
         />

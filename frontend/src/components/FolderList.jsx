@@ -1,19 +1,11 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Folder, Calendar, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import { Folder, Trash2 } from 'lucide-react';
 import PropTypes from 'prop-types';
 import ConfirmDialog from './ConfirmDialog';
 import './FolderList.css';
 
-export default function FolderList({ folders, onDeleteFolder }) {
+export default function FolderList({ folders, onDeleteFolder, onSelectFolder }) {
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, folderId: null, folderName: '' });
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentDate(new Date()), 1000 * 60); // Actualiza cada minuto
-    return () => clearInterval(timer);
-  }, []);
 
   const handleDeleteClick = (e, folderId, folderName) => {
     e.stopPropagation();
@@ -25,31 +17,23 @@ export default function FolderList({ folders, onDeleteFolder }) {
     setConfirmDialog({ isOpen: false, folderId: null, folderName: '' });
   };
 
-  const handleFolderClick = (folderId) => {
-    navigate(`/folder/${folderId}`);
-  };
+  const getDueDateStatus = (dueDate) => {
+    if (!dueDate) return null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const due = new Date(dueDate);
+    due.setHours(0, 0, 0, 0);
+    const diffTime = due.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' };
-    return new Date(dateString).toLocaleDateString('es-ES', options);
-  };
+    // Agregamos dos días a todos los cálculos
+    const adjustedDiffDays = diffDays + 2;
 
-  const isOverdue = (dueDate) => {
-    if (!dueDate) return false;
-    return new Date(dueDate) < currentDate;
-  };
-
-  const isNearDueDate = (dueDate) => {
-    if (!dueDate) return false;
-    const dueDateTime = new Date(dueDate).getTime();
-    const currentDateTime = currentDate.getTime();
-    const oneDayInMs = 24 * 60 * 60 * 1000;
-
-    return dueDateTime <= currentDateTime + oneDayInMs && dueDateTime >= currentDateTime;
-  };
-
-  const folderHasNearDueOrOverdueTasks = (tasks) => {
-    return tasks && tasks.some(task => !task.completed && (isOverdue(task.dueDate) || isNearDueDate(task.dueDate)));
+    if (adjustedDiffDays <= 0) return { type: "overdue", text: "Tarea vencida" };
+    if (adjustedDiffDays === 1) return { type: "today", text: "Vence hoy" };
+    if (adjustedDiffDays === 2) return { type: "oneDay", text: "Vence mañana" };
+    if (adjustedDiffDays === 3) return { type: "twoDays", text: "Vence pasado mañana" };
+    return null;
   };
 
   if (!folders || folders.length === 0) {
@@ -63,12 +47,12 @@ export default function FolderList({ folders, onDeleteFolder }) {
         {folders.map((folder) => (
           <div 
             key={folder._id} 
-            className={`bg-gray-900 rounded-lg overflow-hidden shadow-md ${folderHasNearDueOrOverdueTasks(folder.upcomingTasks) ? 'animate-pulse-red' : ''}`}
+            className="bg-gray-900 rounded-lg overflow-hidden shadow-md"
           >
             <div 
               className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-900"
               style={{ backgroundColor: folder.color + '33' }}
-              onClick={() => handleFolderClick(folder._id)}
+              onClick={() => onSelectFolder(folder._id)}
             >
               <div className="flex items-center">
                 <Folder className="mr-3 h-5 w-5" style={{ color: folder.color }} />
@@ -85,24 +69,31 @@ export default function FolderList({ folders, onDeleteFolder }) {
               {folder.upcomingTasks && folder.upcomingTasks.length > 0 ? (
                 <div className="mt-2">
                   <ul className="mt-1 space-y-1">
-                    {folder.upcomingTasks.map(task => (
-                      <li key={task._id} className="flex items-center text-xs text-gray-200">
-                        <Calendar className="mr-1 h-3 w-3" />
-                        <span className={`
-                          ${task.completed ? 'line-through text-gray-500' : ''}
-                          ${isOverdue(task.dueDate) && !task.completed ? 'text-red-500' : ''}
-                          ${isNearDueDate(task.dueDate) && !task.completed ? 'text-yellow-500' : ''}
-                          ${(isOverdue(task.dueDate) || isNearDueDate(task.dueDate)) && !task.completed ? 'animate-pulse' : ''}
-                        `}>
-                          {task.title}: {formatDate(task.dueDate)}
-                          {task.completed ? ' (Completada)' : isOverdue(task.dueDate) ? ' (Vencida)' : ''}
-                        </span>
-                      </li>
-                    ))}
+                    {folder.upcomingTasks.map(task => {
+                      const dueDateStatus = getDueDateStatus(task.dueDate);
+                      return (
+                        <li key={task._id} className="flex items-center justify-between text-xs text-gray-200">
+                          <span>{task.title}</span>
+                          {dueDateStatus && (
+                            <button
+                              className={`px-2 py-1 rounded text-xs font-semibold animate-pulse ${
+                                dueDateStatus.type === "overdue"
+                                  ? "bg-red-500"
+                                  : dueDateStatus.type === "today" || dueDateStatus.type === "oneDay"
+                                  ? "bg-yellow-500"
+                                  : "bg-green-500"
+                              } text-white`}
+                            >
+                              {dueDateStatus.text}
+                            </button>
+                          )}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               ) : (
-                <p className="text-xs text-gray-400"> Ingrese para ver tareas o agregarlas</p>
+                <p className="text-xs text-gray-400">Ingrese para ver tareas o agregarlas</p>
               )}
             </div>
           </div>
@@ -129,10 +120,11 @@ FolderList.propTypes = {
           _id: PropTypes.string.isRequired,
           title: PropTypes.string.isRequired,
           dueDate: PropTypes.string,
-          completed: PropTypes.bool.isRequired,
+          completed: PropTypes.bool,
         })
       ),
     })
   ),
   onDeleteFolder: PropTypes.func.isRequired,
+  onSelectFolder: PropTypes.func.isRequired,
 };
