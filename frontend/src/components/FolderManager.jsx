@@ -185,16 +185,16 @@ export default function FolderManager() {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+      <div className="space-y-8">
         {foldersWithTasks.map((folder) => (
-          <div key={folder._id} className="mb-4">
+          <div key={folder._id} className=" p-4 rounded-lg shadow-lg">
             <h3
-              className="text-xl font-semibold mb-2 text-center uppercase"
+              className="text-xl font-semibold mb-4 text-center uppercase"
               style={{ color: folder.color || "#ffffff" }}
             >
               {folder.name}
             </h3>
-            <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {folder.upcomingTasks.map((task) => {
                 const dueDateStatus = getDueDateStatus(task.dueDate);
                 return (
@@ -222,7 +222,7 @@ export default function FolderManager() {
                         {task.title}
                       </h4>
                       {dueDateStatus && (
-                        <button
+                        <span
                           className={`px-2 py-1 rounded text-xs font-semibold animate-pulse ${
                             dueDateStatus.type === "overdue"
                               ? "bg-red-500"
@@ -232,7 +232,7 @@ export default function FolderManager() {
                           } text-white`}
                         >
                           {dueDateStatus.text}
-                        </button>
+                        </span>
                       )}
                     </div>
                     <div className="p-4">

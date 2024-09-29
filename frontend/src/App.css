@@ -36,6 +36,13 @@
       padding-right: 2rem;
     }
   }
+
+  @media (min-width: 1920px) {
+    main {
+      padding-left: 15%;
+      padding-right: 15%;
+    }
+  }
   
   /* Ensure that the Navbar is fixed at the top */
   .navbar {
