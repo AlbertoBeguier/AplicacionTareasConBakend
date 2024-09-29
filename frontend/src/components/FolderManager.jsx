@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -10,15 +10,28 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function FolderManager() {
   const [folders, setFolders] = useState([]);
+  const [tasks, setTasks] = useState({});
   const [isFormExpanded, setIsFormExpanded] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchFolders();
+  const fetchTasksForFolder = useCallback(async (folderId) => {
+    try {
+      const response = await axios.get(`${API_URL}/api/tasks/folder/${folderId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      setTasks(prevTasks => ({
+        ...prevTasks,
+        [folderId]: response.data
+      }));
+    } catch (error) {
+      console.error(`Error al obtener las tareas para la carpeta ${folderId}:`, error);
+    }
   }, []);
 
-  const fetchFolders = async () => {
+  const fetchFolders = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/api/folders`, {
         headers: {
@@ -26,11 +39,16 @@ export default function FolderManager() {
         }
       });
       setFolders(response.data);
+      response.data.forEach(folder => fetchTasksForFolder(folder._id));
     } catch (error) {
       console.error('Error al obtener las carpetas:', error);
       setError('Error al cargar las carpetas. Por favor, intente de nuevo más tarde.');
     }
-  };
+  }, [fetchTasksForFolder]);
+
+  useEffect(() => {
+    fetchFolders();
+  }, [fetchFolders]);
 
   const handleCreateFolder = async (newFolder) => {
     try {
@@ -39,8 +57,9 @@ export default function FolderManager() {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
-      setFolders([...folders, response.data]);
+      setFolders(prevFolders => [...prevFolders, response.data]);
       setIsFormExpanded(false);
+      fetchTasksForFolder(response.data._id);
     } catch (error) {
       console.error('Error al crear la carpeta:', error);
       setError('Error al crear la carpeta. Por favor, intente de nuevo.');
@@ -54,7 +73,12 @@ export default function FolderManager() {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
-      setFolders(folders.filter(folder => folder._id !== folderId));
+      setFolders(prevFolders => prevFolders.filter(folder => folder._id !== folderId));
+      setTasks(prevTasks => {
+        const newTasks = { ...prevTasks };
+        delete newTasks[folderId];
+        return newTasks;
+      });
     } catch (error) {
       console.error('Error al eliminar la carpeta:', error);
       setError('Error al eliminar la carpeta. Por favor, intente de nuevo.');
@@ -63,6 +87,18 @@ export default function FolderManager() {
 
   const handleFolderSelect = (folderId) => {
     navigate(`/folder/${folderId}`);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Fecha inválida';
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC'
+    });
   };
 
   return (
@@ -88,12 +124,60 @@ export default function FolderManager() {
         </div>
       </div>
 
-      <div className="bg-gray-800 p-8 rounded-lg shadow-lg">
+      <div className="bg-gray-800 p-8 rounded-lg shadow-lg mb-8">
         <FolderList
           folders={folders}
           onDeleteFolder={handleDeleteFolder}
           onSelectFolder={handleFolderSelect}
         />
+      </div>
+
+      <div>
+        {folders.map(folder => (
+          <div key={folder._id} className="mb-8">
+          <h3 className="text-xl font-semibold mb-4 text-center uppercase" style={{ color: folder.color || '#ffffff' }}>
+              {folder.name}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+              {tasks[folder._id] && tasks[folder._id].map(task => (
+                <div 
+                  key={task._id} 
+                  className="rounded-md shadow-md overflow-hidden" 
+                  style={{ backgroundColor: folder.color || '#374151' }}
+                >
+                  <div 
+                    className="bg-black p-2"
+                    style={{ 
+                      border: `1px solid ${folder.color || '#ffffff'}`,
+                      borderTopLeftRadius: '0.375rem',
+                      borderTopRightRadius: '0.375rem',
+                      borderBottom: 'none'
+                    }}
+                  >
+                    <h4 
+                      className={`font-semibold ${task.completed ? 'line-through' : ''}`}
+                      style={{ color: folder.color || '#ffffff' }}
+                    >
+                      {task.title}
+                    </h4>
+                  </div>
+                  <div className="p-4">
+                    <p className="text-black mb-2 whitespace-pre-wrap">{task.description}</p>
+                    <div className="text-sm text-black">
+                      <p>Creado: {formatDate(task.createdAt)}</p>
+                      {task.dueDate && <p>Vence: {formatDate(task.dueDate)}</p>}
+                    </div>
+                    <div className="mt-2">
+                      <span className={`inline-block px-2 py-1 rounded ${task.completed ? 'bg-green-500' : 'bg-yellow-500'} text-white text-xs`}>
+                        {task.completed ? 'Completada' : 'Pendiente'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
