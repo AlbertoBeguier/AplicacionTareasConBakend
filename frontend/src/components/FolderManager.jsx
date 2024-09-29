@@ -194,71 +194,77 @@ export default function FolderManager() {
             >
               {folder.name}
             </h3>
-            <div className="space-y-2">
-              {folder.upcomingTasks.map((task) => {
-                const dueDateStatus = getDueDateStatus(task.dueDate);
-                return (
-                  <div
-                    key={task._id}
-                    ref={el => taskRefs.current[`${folder._id}-${task._id}`] = el}
-                    className="rounded-md shadow-md overflow-hidden"
-                    style={{ backgroundColor: folder.color || "#374151" }}
-                  >
-                    <div
-                      className="bg-black p-2 flex justify-between items-center"
-                      style={{
-                        border: `1px solid ${folder.color || "#ffffff"}`,
-                        borderTopLeftRadius: "0.375rem",
-                        borderTopRightRadius: "0.375rem",
-                        borderBottom: "none",
-                      }}
-                    >
-                      <h4
-                        className={`font-semibold ${
-                          task.completed ? "line-through" : ""
-                        }`}
-                        style={{ color: folder.color || "#ffffff" }}
+            <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
+              {folder.upcomingTasks.length > 0 ? (
+                <div className="space-y-2">
+                  {folder.upcomingTasks.map((task) => {
+                    const dueDateStatus = getDueDateStatus(task.dueDate);
+                    return (
+                      <div
+                        key={task._id}
+                        ref={el => taskRefs.current[`${folder._id}-${task._id}`] = el}
+                        className="rounded-md shadow-md overflow-hidden"
+                        style={{ backgroundColor: folder.color || "#374151" }}
                       >
-                        {task.title}
-                      </h4>
-                      {dueDateStatus && (
-                        <button
-                          className={`px-2 py-1 rounded text-xs font-semibold animate-pulse ${
-                            dueDateStatus.type === "overdue"
-                              ? "bg-red-500"
-                              : dueDateStatus.type === "today" || dueDateStatus.type === "oneDay"
-                              ? "bg-yellow-500"
-                              : "bg-green-500"
-                          } text-white`}
+                        <div
+                          className="bg-black p-2 flex justify-between items-center"
+                          style={{
+                            border: `1px solid ${folder.color || "#ffffff"}`,
+                            borderTopLeftRadius: "0.375rem",
+                            borderTopRightRadius: "0.375rem",
+                            borderBottom: "none",
+                          }}
                         >
-                          {dueDateStatus.text}
-                        </button>
-                      )}
-                    </div>
-                    <div className="p-4">
-                      <p className="text-black font-semibold mb-2 whitespace-pre-wrap">
-                        {task.description}
-                      </p>
-                      <div className="text-sm text-black">
-                        <p>Creado: {formatDate(task.createdAt)}</p>
-                        {task.dueDate && (
-                          <p>Vence: {formatDate(task.dueDate)}</p>
-                        )}
+                          <h4
+                            className={`font-semibold ${
+                              task.completed ? "line-through" : ""
+                            }`}
+                            style={{ color: folder.color || "#ffffff" }}
+                          >
+                            {task.title}
+                          </h4>
+                          {dueDateStatus && (
+                            <span
+                              className={`px-2 py-1 rounded text-xs font-semibold animate-pulse ${
+                                dueDateStatus.type === "overdue"
+                                  ? "bg-red-500"
+                                  : dueDateStatus.type === "today" || dueDateStatus.type === "oneDay"
+                                  ? "bg-yellow-500"
+                                  : "bg-green-500"
+                              } text-white`}
+                            >
+                              {dueDateStatus.text}
+                            </span>
+                          )}
+                        </div>
+                        <div className="p-4">
+                          <p className="text-black font-semibold mb-2 whitespace-pre-wrap">
+                            {task.description}
+                          </p>
+                          <div className="text-sm text-black">
+                            <p>Creado: {formatDate(task.createdAt)}</p>
+                            {task.dueDate && (
+                              <p>Vence: {formatDate(task.dueDate)}</p>
+                            )}
+                          </div>
+                          <div className="mt-2">
+                            <span
+                              className={`inline-block px-3 py-2 rounded ${
+                                task.completed ? "bg-green-500" : "bg-yellow-500"
+                              } text-black text-xs font-semibold shadow-md rounded-md border border-black`}
+                              style={{ borderWidth: "0.5px" }}
+                            >
+                              {task.completed ? "Completada" : "Pendiente"}
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="mt-2">
-                        <span
-                          className={`inline-block px-3 py-2 rounded ${
-                            task.completed ? "bg-green-500" : "bg-yellow-500"
-                          } text-black text-xs font-semibold shadow-md rounded-md border border-black`}
-                          style={{ borderWidth: "0.5px" }}
-                        >
-                          {task.completed ? "Completada" : "Pendiente"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-gray-400 text-center">No hay tareas en esta carpeta.</p>
+              )}
             </div>
           </div>
         ))}
