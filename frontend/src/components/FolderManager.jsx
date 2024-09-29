@@ -143,7 +143,7 @@ export default function FolderManager() {
   }));
 
   return (
-    <div className="w-full px-2 sm:px-4"> 
+    <div className="w-full px-2 sm:px-4">
       {error && (
         <div
           className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
@@ -185,7 +185,7 @@ export default function FolderManager() {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
         {foldersWithTasks.map((folder) => (
           <div key={folder._id} className="mb-4">
             <h3
@@ -235,11 +235,11 @@ export default function FolderManager() {
                         </button>
                       )}
                     </div>
-                    <div className="p-2">
-                      <p className="text-black font-semibold mb-2 whitespace-pre-wrap text-sm">
+                    <div className="p-4">
+                      <p className="text-black font-semibold mb-2 whitespace-pre-wrap">
                         {task.description}
                       </p>
-                      <div className="text-xs text-black">
+                      <div className="text-sm text-black">
                         <p>Creado: {formatDate(task.createdAt)}</p>
                         {task.dueDate && (
                           <p>Vence: {formatDate(task.dueDate)}</p>
@@ -247,7 +247,7 @@ export default function FolderManager() {
                       </div>
                       <div className="mt-2">
                         <span
-                          className={`inline-block px-2 py-1 rounded ${
+                          className={`inline-block px-3 py-2 rounded ${
                             task.completed ? "bg-green-500" : "bg-yellow-500"
                           } text-black text-xs font-semibold shadow-md rounded-md border border-black`}
                           style={{ borderWidth: "0.5px" }}
