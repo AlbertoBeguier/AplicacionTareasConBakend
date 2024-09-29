@@ -187,7 +187,7 @@ export default function FolderManager() {
 
       <div className="space-y-8">
         {foldersWithTasks.map((folder) => (
-          <div key={folder._id} className=" p-4 rounded-lg shadow-lg">
+          <div key={folder._id} className="p-4 rounded-lg shadow-lg">
             <h3
               className="text-xl font-semibold mb-4 text-center uppercase"
               style={{ color: folder.color || "#ffffff" }}
@@ -205,13 +205,14 @@ export default function FolderManager() {
                     style={{ backgroundColor: folder.color || "#374151" }}
                   >
                     <div
-                      className="bg-black p-2 flex justify-between items-center"
+                      className="bg-black p-2 flex justify-between items-center cursor-pointer"
                       style={{
                         border: `1px solid ${folder.color || "#ffffff"}`,
                         borderTopLeftRadius: "0.375rem",
                         borderTopRightRadius: "0.375rem",
                         borderBottom: "none",
                       }}
+                      onClick={() => handleFolderSelect(folder._id)}
                     >
                       <h4
                         className={`font-semibold ${

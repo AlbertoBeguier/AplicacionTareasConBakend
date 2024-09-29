@@ -1,11 +1,20 @@
-import { useState } from 'react';
-import { Folder, Trash2 } from 'lucide-react';
-import PropTypes from 'prop-types';
-import ConfirmDialog from './ConfirmDialog';
-import './FolderList.css';
+import { useState } from "react";
+import { Folder, Trash2 } from "lucide-react";
+import PropTypes from "prop-types";
+import ConfirmDialog from "./ConfirmDialog";
+import "./FolderList.css";
 
-export default function FolderList({ folders, onDeleteFolder, onSelectFolder, onSelectTask }) {
-  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, folderId: null, folderName: '' });
+export default function FolderList({
+  folders,
+  onDeleteFolder,
+  onSelectFolder,
+  onSelectTask,
+}) {
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    folderId: null,
+    folderName: "",
+  });
 
   const handleDeleteClick = (e, folderId, folderName) => {
     e.stopPropagation();
@@ -14,7 +23,7 @@ export default function FolderList({ folders, onDeleteFolder, onSelectFolder, on
 
   const handleConfirmDelete = () => {
     onDeleteFolder(confirmDialog.folderId);
-    setConfirmDialog({ isOpen: false, folderId: null, folderName: '' });
+    setConfirmDialog({ isOpen: false, folderId: null, folderName: "" });
   };
 
   const getDueDateStatus = (dueDate) => {
@@ -29,10 +38,12 @@ export default function FolderList({ folders, onDeleteFolder, onSelectFolder, on
     // Agregamos dos días a todos los cálculos
     const adjustedDiffDays = diffDays + 2;
 
-    if (adjustedDiffDays <= 0) return { type: "overdue", text: "Tarea vencida" };
+    if (adjustedDiffDays <= 0)
+      return { type: "overdue", text: "Tarea vencida" };
     if (adjustedDiffDays === 1) return { type: "today", text: "Vence hoy" };
     if (adjustedDiffDays === 2) return { type: "oneDay", text: "Vence mañana" };
-    if (adjustedDiffDays === 3) return { type: "twoDays", text: "Vence pasado mañana" };
+    if (adjustedDiffDays === 3)
+      return { type: "twoDays", text: "Vence pasado mañana" };
     return null;
   };
 
@@ -45,17 +56,20 @@ export default function FolderList({ folders, onDeleteFolder, onSelectFolder, on
       <h2 className="text-2xl font-bold text-white mb-4 carpetas">Carpetas</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {folders.map((folder) => (
-          <div 
-            key={folder._id} 
+          <div
+            key={folder._id}
             className="bg-gray-900 rounded-lg overflow-hidden shadow-md"
           >
-            <div 
+            <div
               className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-900"
-              style={{ backgroundColor: folder.color + '33' }}
+              style={{ backgroundColor: folder.color + "33" }}
               onClick={() => onSelectFolder(folder._id)}
             >
               <div className="flex items-center">
-                <Folder className="mr-3 h-5 w-5" style={{ color: folder.color }} />
+                <Folder
+                  className="mr-3 h-5 w-5"
+                  style={{ color: folder.color }}
+                />
                 <span className="text-white font-medium">{folder.name}</span>
               </div>
               <button
@@ -69,11 +83,14 @@ export default function FolderList({ folders, onDeleteFolder, onSelectFolder, on
               {folder.upcomingTasks && folder.upcomingTasks.length > 0 ? (
                 <div className="mt-2">
                   <ul className="mt-1 space-y-1">
-                    {folder.upcomingTasks.map(task => {
+                    {folder.upcomingTasks.map((task) => {
                       const dueDateStatus = getDueDateStatus(task.dueDate);
                       return (
-                        <li key={task._id} className="flex items-center justify-between text-xs text-gray-200">
-                          <span 
+                        <li
+                          key={task._id}
+                          className="flex items-center justify-between text-xs text-gray-200"
+                        >
+                          <span
                             className="cursor-pointer hover:underline"
                             onClick={(e) => {
                               e.stopPropagation();
@@ -83,17 +100,18 @@ export default function FolderList({ folders, onDeleteFolder, onSelectFolder, on
                             {task.title}
                           </span>
                           {dueDateStatus && (
-                            <button
-                              className={`px-2 py-1 rounded text-xs font-semibold animate-pulse ${
+                            <span
+                              className={`px-2 py-1 rounded text-xs font-semibold animate-pulse cursor-default shadow-md ${
                                 dueDateStatus.type === "overdue"
                                   ? "bg-red-500"
-                                  : dueDateStatus.type === "today" || dueDateStatus.type === "oneDay"
+                                  : dueDateStatus.type === "today" ||
+                                    dueDateStatus.type === "oneDay"
                                   ? "bg-yellow-500"
                                   : "bg-green-500"
-                              } text-white`}
+                              } text-black`}
                             >
                               {dueDateStatus.text}
-                            </button>
+                            </span>
                           )}
                         </li>
                       );
@@ -101,7 +119,9 @@ export default function FolderList({ folders, onDeleteFolder, onSelectFolder, on
                   </ul>
                 </div>
               ) : (
-                <p className="text-xs text-gray-400">Ingrese para ver tareas o agregarlas</p>
+                <p className="text-xs text-gray-400">
+                  Ingrese para ver tareas o agregarlas
+                </p>
               )}
             </div>
           </div>
@@ -109,7 +129,9 @@ export default function FolderList({ folders, onDeleteFolder, onSelectFolder, on
       </div>
       <ConfirmDialog
         isOpen={confirmDialog.isOpen}
-        onClose={() => setConfirmDialog({ isOpen: false, folderId: null, folderName: '' })}
+        onClose={() =>
+          setConfirmDialog({ isOpen: false, folderId: null, folderName: "" })
+        }
         onConfirm={handleConfirmDelete}
         folderName={confirmDialog.folderName}
       />
