@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import { Footer } from './components/Footer';
 import LoginForm from './components/LoginForm';
@@ -14,15 +14,14 @@ const INACTIVITY_TIMEOUT = 12 * 60 * 60 * 1000; // 12 horas en milisegundos
 function App() {
   const [user, setUser] = useState(null);
   const [showCreateUserForm, setShowCreateUserForm] = useState(false);
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleLogout = useCallback(() => {
     setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('username');
     localStorage.removeItem('lastActivity');
-    navigate('/login');
-  }, [navigate]);
+  }, []);
 
   const checkInactivity = useCallback(() => {
     const lastActivity = localStorage.getItem('lastActivity');
@@ -55,18 +54,10 @@ function App() {
           handleLogout();
         }
       }
+      setIsLoading(false);
     };
 
     verifyToken();
-    checkInactivity();
-
-    const handleBeforeUnload = () => {
-      localStorage.removeItem('token');
-      localStorage.removeItem('username');
-      localStorage.removeItem('lastActivity');
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
 
     const activityEvents = ['mousedown', 'keydown', 'scroll', 'touchstart'];
     activityEvents.forEach(event => {
@@ -76,7 +67,6 @@ function App() {
     const inactivityCheck = setInterval(checkInactivity, 60000); // Verificar cada minuto
 
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
       activityEvents.forEach(event => {
         window.removeEventListener(event, updateLastActivity);
       });
@@ -112,40 +102,41 @@ function App() {
 
   const isAdmin = user && user.username === 'Alberto';
 
-  return (
-    <div className="min-h-screen bg-gray-950 flex flex-col">
-      <Navbar 
-        user={user} 
-        onLogout={handleLogout} 
-        onCreateUser={isAdmin ? handleCreateUser : undefined} 
-      />
-      <main className="flex-grow w-full px-2 sm:px-4 py-8 mt-16">
-        <Routes>
-          <Route path="/login" element={!user ? <LoginForm onLogin={handleLogin} /> : <Navigate to="/" />} />
-          <Route 
-            path="/" 
-            element={user ? <FolderManager user={user} /> : <Navigate to="/login" />} 
-          />
-          <Route 
-            path="/folder/:folderId" 
-            element={user ? <FolderView /> : <Navigate to="/login" />} 
-          />
-        </Routes>
-      </main>
-      {showCreateUserForm && isAdmin && (
-        <CreateUserForm onClose={handleCloseCreateUserForm} onCreateUser={handleCreateUserSubmit} />
-      )}
-      <Footer />
-    </div>
-  );
-}
+  if (isLoading) {
+    return <div>Cargando...</div>;
+  }
 
-function AppWrapper() {
   return (
     <Router>
-      <App />
+      <div className="min-h-screen bg-gray-950 flex flex-col">
+        <Navbar 
+          user={user} 
+          onLogout={handleLogout} 
+          onCreateUser={isAdmin ? handleCreateUser : undefined} 
+        />
+        <main className="flex-grow w-full px-2 sm:px-4 py-8 mt-16">
+          <Routes>
+            <Route 
+              path="/login" 
+              element={user ? <Navigate to="/" /> : <LoginForm onLogin={handleLogin} />} 
+            />
+            <Route 
+              path="/" 
+              element={user ? <FolderManager user={user} /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/folder/:folderId" 
+              element={user ? <FolderView /> : <Navigate to="/login" />} 
+            />
+          </Routes>
+        </main>
+        {showCreateUserForm && isAdmin && (
+          <CreateUserForm onClose={handleCloseCreateUserForm} onCreateUser={handleCreateUserSubmit} />
+        )}
+        <Footer />
+      </div>
     </Router>
   );
 }
 
-export default AppWrapper;
+export default App;
