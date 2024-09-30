@@ -14,11 +14,38 @@ function App() {
   const [showCreateUserForm, setShowCreateUserForm] = useState(false);
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
-    const storedToken = localStorage.getItem('token');
-    if (storedUsername && storedToken) {
-      setUser({ username: storedUsername, token: storedToken });
-    }
+    const verifyToken = async () => {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        try {
+          const response = await axios.get('http://localhost:3000/api/verify-token', {
+            headers: { Authorization: `Bearer ${storedToken}` }
+          });
+          if (response.data.valid) {
+            const storedUsername = localStorage.getItem('username');
+            setUser({ username: storedUsername, token: storedToken });
+          } else {
+            handleLogout();
+          }
+        } catch (error) {
+          console.error('Error al verificar el token:', error);
+          handleLogout();
+        }
+      }
+    };
+
+    verifyToken();
+
+    const handleBeforeUnload = () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('username');
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []);
 
   const handleLogin = (userData) => {
