@@ -130,10 +130,10 @@ export default function FolderManager() {
 
     const adjustedDiffDays = diffDays + 2;
    
-    if (adjustedDiffDays <= 0) return { type: "overdue", text: "Tarea vencida" };
-    if (adjustedDiffDays === 1) return { type: "today", text: "Vence hoy" };
-    if (adjustedDiffDays === 2) return { type: "oneDay", text: "Vence mañana" };
-    if (adjustedDiffDays === 3) return { type: "twoDays", text: "Vence pasado mañana" };
+    if (adjustedDiffDays <= 0) return { type: "overdue", text: "Tarea vencida", color: "bg-red-500" };
+    if (adjustedDiffDays === 1) return { type: "today", text: "Vence hoy", color: "bg-orange-500" };
+    if (adjustedDiffDays === 2) return { type: "oneDay", text: "Vence mañana", color: "bg-yellow-500" };
+    if (adjustedDiffDays === 3) return { type: "twoDays", text: "Vence pasado mañana", color: "bg-green-500" };
     return null;
   };
 
@@ -224,13 +224,7 @@ export default function FolderManager() {
                       </h4>
                       {dueDateStatus && (
                         <span
-                          className={`px-2 py-1 rounded text-xs font-semibold animate-pulse ${
-                            dueDateStatus.type === "overdue"
-                              ? "bg-red-500"
-                              : dueDateStatus.type === "today" || dueDateStatus.type === "oneDay"
-                              ? "bg-yellow-500"
-                              : "bg-green-500"
-                          } text-white`}
+                          className={`px-2 py-1 rounded text-xs font-semibold animate-pulse ${dueDateStatus.color} text-black`}
                         >
                           {dueDateStatus.text}
                         </span>
