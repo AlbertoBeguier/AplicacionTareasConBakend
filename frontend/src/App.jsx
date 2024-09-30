@@ -103,9 +103,15 @@ function App() {
   const isAdmin = user && user.username === 'Alberto';
 
   if (isLoading) {
-    return <div>Cargando...</div>;
+    return (
+      <div className="loading-screen">
+        <div className="spinner"></div>
+        <div className="loading-text">Cargando...</div>
+      </div>
+    );
   }
 
+  
   return (
     <Router>
       <div className="min-h-screen bg-gray-950 flex flex-col">
