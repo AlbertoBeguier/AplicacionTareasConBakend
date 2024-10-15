@@ -169,11 +169,11 @@ export default function FolderManager() {
       });
 
       if (hasOverdueTasks && hasUpcomingTasks) {
-        document.title = "Tareas Vencidas & A Vencer";
+        document.title = "Tareas vencidas & a vencer";
       } else if (hasOverdueTasks) {
-        document.title = "Tareas Vencidas";
+        document.title = "Tareas vencidas";
       } else if (hasUpcomingTasks) {
-        document.title = "Tareas Próximas a Vencer";
+        document.title = "Tareas próximas a vencer";
       } else {
         document.title = "Tareas";
       }
