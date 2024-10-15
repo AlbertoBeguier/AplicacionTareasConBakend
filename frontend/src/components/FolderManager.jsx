@@ -142,6 +142,46 @@ export default function FolderManager() {
     upcomingTasks: tasks[folder._id] || []
   }));
 
+  // Nuevo useEffect para cambiar el título dinámicamente
+  useEffect(() => {
+    const checkTasksStatus = () => {
+      let hasOverdueTasks = false;
+      let hasUpcomingTasks = false;
+
+      folders.forEach((folder) => {
+        const folderTasks = tasks[folder._id] || [];
+        folderTasks.forEach((task) => {
+          if (task.dueDate) {
+            const today = new Date();
+            const dueDate = new Date(task.dueDate);
+            dueDate.setHours(0, 0, 0, 0);
+
+            const diffTime = dueDate.getTime() - today.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) {
+              hasOverdueTasks = true;
+            } else if (diffDays <= 2) {
+              hasUpcomingTasks = true;
+            }
+          }
+        });
+      });
+
+      if (hasOverdueTasks && hasUpcomingTasks) {
+        document.title = "Tareas Vencidas & A Vencer";
+      } else if (hasOverdueTasks) {
+        document.title = "Tareas Vencidas";
+      } else if (hasUpcomingTasks) {
+        document.title = "Tareas Próximas a Vencer";
+      } else {
+        document.title = "Tareas";
+      }
+    };
+
+    checkTasksStatus();
+  }, [folders, tasks]);
+
   return (
     <div className="w-full px-2 sm:px-4">
       {error && (
