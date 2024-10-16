@@ -1,18 +1,14 @@
-import { LogOut, ArrowLeft } from 'lucide-react';
 import { useState, useEffect } from "react";
-import PropTypes from 'prop-types';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { LogOut, ArrowLeft } from 'lucide-react';
+import PropTypes from 'prop-types';
 import logo from "../assets/logoEstudio.png";
 import logo1 from "../assets/logoEstudio1.png";
-import './NavBar.css'; 
+import './NavBar.css';
 
 const Navbar = ({ user, onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const handleGoBack = () => {
-    navigate(-1);
-  };
   const [showLogo1, setShowLogo1] = useState(true);
 
   useEffect(() => {
@@ -21,6 +17,19 @@ const Navbar = ({ user, onLogout }) => {
     }, 20000); // Cambia el logo cada 20 segundos
     return () => clearInterval(logoTimer);
   }, []);
+
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
+  const handleLogout = () => {
+    // Limpiar localStorage y sessionStorage
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Llamar a la función original de cierre de sesión
+    onLogout();
+  };
 
   return (
     <>
@@ -41,7 +50,7 @@ const Navbar = ({ user, onLogout }) => {
                   showLogo1 ? "" : "show"
                 }`}
                 alt="logo1"
-              />{" "}
+              />
             </span>
           </div>
           <div className="flex items-center space-x-4">
@@ -56,10 +65,10 @@ const Navbar = ({ user, onLogout }) => {
             )}
             {user && (
               <>
-                <span className="text-white">Authorized User: {user.username}</span>
+                <span className="text-white">Usuario Autorizado: {user.username}</span>
                 <button
                   className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex items-center"
-                  onClick={onLogout}
+                  onClick={handleLogout}
                 >
                   <LogOut className="mr-2 h-5 w-5" />
                   Cerrar Sesión
