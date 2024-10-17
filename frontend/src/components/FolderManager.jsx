@@ -18,23 +18,17 @@ export default function FolderManager() {
 
   const fetchTasksForFolder = useCallback(async (folderId) => {
     try {
-      const response = await axios.get(
-        `${API_URL}/api/tasks/folder/${folderId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await axios.get(`${API_URL}/api/tasks/folder/${folderId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       setTasks((prevTasks) => ({
         ...prevTasks,
         [folderId]: response.data,
       }));
     } catch (error) {
-      console.error(
-        `Error al obtener las tareas para la carpeta ${folderId}:`,
-        error
-      );
+      console.error(`Error al obtener las tareas para la carpeta ${folderId}:`, error);
     }
   }, []);
 
@@ -49,9 +43,7 @@ export default function FolderManager() {
       response.data.forEach((folder) => fetchTasksForFolder(folder._id));
     } catch (error) {
       console.error("Error al obtener las carpetas:", error);
-      setError(
-        "Error al cargar las carpetas. Por favor, intente de nuevo más tarde."
-      );
+      setError("Error al cargar las carpetas. Por favor, intente de nuevo más tarde.");
     }
   }, [fetchTasksForFolder]);
 
@@ -82,9 +74,7 @@ export default function FolderManager() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      setFolders((prevFolders) =>
-        prevFolders.filter((folder) => folder._id !== folderId)
-      );
+      setFolders((prevFolders) => prevFolders.filter((folder) => folder._id !== folderId));
       setTasks((prevTasks) => {
         const newTasks = { ...prevTasks };
         delete newTasks[folderId];
@@ -129,7 +119,7 @@ export default function FolderManager() {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     const adjustedDiffDays = diffDays + 2;
-   
+
     if (adjustedDiffDays <= 0) return { type: "overdue", text: "Tarea vencida", color: "bg-red-500" };
     if (adjustedDiffDays === 1) return { type: "today", text: "Vence hoy", color: "bg-orange-500" };
     if (adjustedDiffDays === 2) return { type: "oneDay", text: "Vence mañana", color: "bg-yellow-500" };
@@ -142,38 +132,41 @@ export default function FolderManager() {
     upcomingTasks: tasks[folder._id] || []
   }));
 
-  // Nuevo useEffect para cambiar el título dinámicamente
   useEffect(() => {
     const checkTasksStatus = () => {
       let hasOverdueTasks = false;
-      let hasUpcomingTasks = false;
+      let hasTasksDueToday = false;
+      let hasTasksDueTomorrow = false;
+      let hasTasksDueDayAfterTomorrow = false;
 
       folders.forEach((folder) => {
         const folderTasks = tasks[folder._id] || [];
         folderTasks.forEach((task) => {
           if (task.dueDate) {
-            const today = new Date();
-            const dueDate = new Date(task.dueDate);
-            dueDate.setHours(0, 0, 0, 0);
-
-            const diffTime = dueDate.getTime() - today.getTime();
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            if (diffDays < 0) {
-              hasOverdueTasks = true;
-            } else if (diffDays <= 2) {
-              hasUpcomingTasks = true;
+            const dueDateStatus = getDueDateStatus(task.dueDate);
+            if (dueDateStatus) {
+              if (dueDateStatus.type === "overdue") {
+                hasOverdueTasks = true;
+              } else if (dueDateStatus.type === "today") {
+                hasTasksDueToday = true;
+              } else if (dueDateStatus.type === "oneDay") {
+                hasTasksDueTomorrow = true;
+              } else if (dueDateStatus.type === "twoDays") {
+                hasTasksDueDayAfterTomorrow = true;
+              }
             }
           }
         });
       });
 
-      if (hasOverdueTasks && hasUpcomingTasks) {
-        document.title = "Tareas vencidas & a vencer";
-      } else if (hasOverdueTasks) {
+      if (hasOverdueTasks) {
         document.title = "Tareas vencidas";
-      } else if (hasUpcomingTasks) {
-        document.title = "Tareas próximas a vencer";
+      } else if (hasTasksDueToday) {
+        document.title = "Tareas que vencen hoy";
+      } else if (hasTasksDueTomorrow) {
+        document.title = "Tareas que vencen mañana";
+      } else if (hasTasksDueDayAfterTomorrow) {
+        document.title = "Tareas que vencen pasado mañana";
       } else {
         document.title = "Tareas";
       }
@@ -301,3 +294,4 @@ export default function FolderManager() {
     </div>
   );
 }
+
