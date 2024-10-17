@@ -159,7 +159,13 @@ export default function FolderManager() {
         });
       });
 
-      if (hasOverdueTasks) {
+      if (hasOverdueTasks && hasTasksDueToday && (hasTasksDueTomorrow || hasTasksDueDayAfterTomorrow)) {
+        document.title = "Tareas vencidas & vencen hoy & próximos vencimientos";
+      } else if (hasTasksDueToday && (hasTasksDueTomorrow || hasTasksDueDayAfterTomorrow)) {
+        document.title = "Tareas vencen hoy & próximos vencimientos";
+      } else if (hasOverdueTasks && (hasTasksDueTomorrow || hasTasksDueDayAfterTomorrow)) {
+        document.title = "Tareas vencidas y a vencer";
+      } else if (hasOverdueTasks) {
         document.title = "Tareas vencidas";
       } else if (hasTasksDueToday) {
         document.title = "Tareas que vencen hoy";
@@ -294,4 +300,5 @@ export default function FolderManager() {
     </div>
   );
 }
+
 
